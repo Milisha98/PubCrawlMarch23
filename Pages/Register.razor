@@ -1,0 +1,99 @@
+﻿@page "/register"
+@using PubCrawlMarch23
+@using PubCrawlMarch23.Pokemon;
+@using PubCrawlMarch23.Users;
+@using System.Diagnostics;
+@inject UserService UserService
+
+<PageTitle>Register</PageTitle>
+
+<MudStack>
+
+    <!-- Header -->
+    <MudPaper Class="pa-4">
+        <MudStack Row="true">
+            <MudImage Src="images/icon.png" Alt="Core Pub Crawl Icon" Elevation="25" Class="rounded-lg" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.h2">REGISTER NOW</MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    <!-- Enter Your Name -->
+    <MudPaper Class="pa-4">
+        <MudForm>
+        <MudStack Spacing="4">
+            <MudTextField T="string" Label="Your Name" MaxLength="50" Counter="50" Required="true" RequiredError="Please enter Your Name" Immediate="true" @bind-value="vm.UserName" />
+        </MudStack>
+        </MudForm>
+    </MudPaper>
+
+    <!-- Select a Pokemon -->
+    <MudPaper Class="pa-4">
+        <MudStack Row="true" Justify="Justify.Center">
+            <MudText Typo="Typo.caption">SELECT A POKEMON</MudText>
+        </MudStack>
+        <MudPaper Class="d-flex flex-wrap gap-4" Elevation="0">
+
+            @foreach (var pokemon in vm.PokemonList)
+            {
+                <MudPaper Class="mud-theme-primary" Width="320px" Height="330px">
+                    <MudCard>
+                        <MudCardContent>
+                            @if (pokemon != vm.SelectedPokemon)
+                            {
+                                <MudButton Variant="Variant.Filled" @onclick="() => SelectPokemon(pokemon)">
+                                    <MudStack Spacing="4" Justify="Justify.Center">
+                                        <MudText Typo="Typo.body1">@pokemon</MudText>                                        
+                                        <MudImage Src="@PokemonHelper.GetImage(pokemon)" Width="256" Height="256" />
+                                    </MudStack>
+                                </MudButton>
+                            }
+                            else
+                            {
+                                <MudAlert Severity="Severity.Success">
+                                    <MudStack Spacing="1">
+                                        <MudText Typo="Typo.body1">@pokemon</MudText>
+                                        <MudImage Src="@PokemonHelper.GetImage(pokemon)" Width="256" Height="256" Style="position: relative; left: -36px;" />
+                                    </MudStack>
+                                </MudAlert>
+                            }
+                        </MudCardContent>
+                    </MudCard>
+                </MudPaper>
+            }
+        </MudPaper>
+    </MudPaper>
+    <!-- Register Button -->
+    <MudPaper Class="pa-4">
+        <MudStack Spacing="4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true">Register Now</MudButton>
+        </MudStack>
+    </MudPaper>
+
+
+</MudStack>
+
+
+@code {
+    private UserRegistrationVM vm = new(new UserService());
+
+    bool success;
+    string[] errors = { };
+    MudForm form = new();
+
+    void SelectPokemon(PokemonEnum pokemon)
+    {
+        Debug.WriteLine($"Selecting {pokemon}");
+        vm.SelectedPokemon = pokemon;
+    }
+
+    private void HandleSubmit()
+    {
+        //Logger.LogInformation("HandleSubmit called");
+
+        // Process the form
+    }
+
+    // https://learn.microsoft.com/en-us/aspnet/core/blazor/forms-and-input-components?view=aspnetcore-7.0
+}
