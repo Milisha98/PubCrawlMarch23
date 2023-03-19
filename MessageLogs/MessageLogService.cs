@@ -50,12 +50,14 @@ public class MessageLogService
 			"might be paying for cleaning in their uber ride",
 			"can't keep up",
 			"might not be allowed into further establishments",
-			"might have got a lifetime ban at that last pub",
+			"might get a lifetime ban at the pub",
 			"could be cautioned with a move-on notice",
-			"is getting too paralytic",
+			"could be too paralytic",
 			"has used up their fun quota",
 			"is feeling a hangover coming on",
 			"might be blowing chunks",
+			"realizes the mistake of their life choices",
+			"has to adult up in the morning",
 			"is being dishonourably discharged"
 		};
 		var index = Random.Shared.Next(0, sucksNight.Count);
@@ -73,5 +75,7 @@ public class MessageLogService
 		_messages.Add(log);
 		_da.Save(_messages);
 	}
+
+	public List<MessageLog> Messages { get => _messages; }
 
 }
