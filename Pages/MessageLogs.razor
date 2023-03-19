@@ -1,0 +1,46 @@
+﻿@page "/messagelogs"
+@using PubCrawlMarch23
+@using PubCrawlMarch23.MessageLogs;
+
+@inject MessageLogService MessageLogService
+
+<PageTitle>Message Logs</PageTitle>
+
+<MudStack>
+
+    <!-- Header -->
+    <MudPaper Class="pa-4">
+        <MudStack Row="true">
+            <MudImage Src="images/icon.png" Alt="Core Pub Crawl Icon" Elevation="25" Class="rounded-lg" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.h2">MESSAGE LOGS</MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudSimpleTable Hover="true" Dense="true" FixedHeader="true">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in vm.Messages)
+                {
+                    <tr>
+                        <td>@row.When.ToString("d-MMM h:mm tt")</td>
+                        <td>@row.Message</td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </MudPaper>
+
+</MudStack>
+
+@code {
+    private MessageLogUserModel vm = new(new MessageLogService());
+
+}

@@ -6,14 +6,24 @@ namespace PubCrawlMarch23.MessageLogs;
 public class MessageLogService
 {
     private readonly MessageLogDA _da;
-	private List<MessageLog> _messages;
+	private IList<MessageLog> _messages = new List<MessageLog>();
 
 	public MessageLogService() : this(new MessageLogDA()) { }
 	public MessageLogService(MessageLogDA messageLogDA)
 	{
 		_da = messageLogDA ?? new MessageLogDA();
-		_messages = new List<MessageLog>();
-	}
+		LoadMessages();
+
+    }
+
+	private void LoadMessages()
+	{
+        _messages = 
+			_da.List()
+			   .Select(x => x with { Message = Regex.Unescape(x.Message) })			// For some reason de-serialize isn't working for me here
+               .OrderByDescending(x => x.When)
+               .ToList();
+    }
 
 	public void AddNewUserMessage(string userName, PokemonEnum pokemon)
 	{
@@ -108,6 +118,6 @@ public class MessageLogService
 		_da.Save(_messages);
 	}
 
-	public List<MessageLog> Messages { get => _messages; }
+	public IList<MessageLog> Messages { get => _messages; } 
 
 }

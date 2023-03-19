@@ -7,7 +7,8 @@ public class MessageLogUserModel
 	public MessageLogUserModel(MessageLogService messageLogService)
 	{
 		_service = messageLogService ?? new MessageLogService();
+
 	}
 
-    public List<MessageLog> Messages { get => _service.Messages; }
+    public IList<MessageLog> Messages { get => _service.Messages; }
 }
