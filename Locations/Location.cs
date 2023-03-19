@@ -1,3 +1,3 @@
 ﻿namespace PubCrawlMarch23.Locations;
 
-public record Location(int Sequence, string Name);
+public record Location(int Sequence, string Name, bool IsActive);

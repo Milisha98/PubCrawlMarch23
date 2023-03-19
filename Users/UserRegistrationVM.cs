@@ -46,7 +46,7 @@ public class UserRegistrationVM
         set
         {
             value = Regex.Replace(value, @"[^\w ']", "");
-            if (value.Length > 50) value = value.Substring(0, 50);
+            if (value.Length > 50) value = value[..50];
 
             _userName = value.Trim();
 

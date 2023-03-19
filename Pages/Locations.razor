@@ -1,0 +1,145 @@
+﻿@page "/locations"
+@using PubCrawlMarch23
+@using PubCrawlMarch23.Locations;
+@using System.Diagnostics;
+
+<PageTitle>Locations</PageTitle>
+
+<MudStack>
+
+    <!-- Header -->
+    <MudPaper Class="pa-4">
+        <MudStack Row="true">
+            <MudImage Src="images/icon.png" Alt="Core Pub Crawl Icon" Elevation="25" Class="rounded-lg" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.h2">LOCATIONS</MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    @if (IsListMode)
+    {
+        <MudPaper Class="pa-4">
+            
+
+            <MudSimpleTable Hover="true" Dense="true" FixedHeader="true">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Is Enabled</th>
+                        <th></th>
+                        <th>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="HandleAddNew" Size="Size.Medium">Add New</MudButton>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in vm.Locations)
+                    {
+                        <tr>
+                            <td><MudLink @onclick="() => OnEditClick(row)">@row.Name</MudLink></td>
+                            <td>@(row.IsActive ? "Yes" : "No")</td>
+                            <td><!-- TODO: Resequence buttons --></td>
+                            <td><!-- TODO: Resequence buttons --></td>
+                        </tr>
+                    }
+                </tbody>
+        </MudSimpleTable>
+        </MudPaper>
+    }
+    else
+    {
+        if (vm.Errors.Any())
+        {
+            <MudPaper Class="pa-4">
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                    @foreach (var error in vm.Errors)
+                    {
+                        <MudText>@error</MudText>
+                    }
+                </MudAlert>
+            </MudPaper>            
+        }
+
+        <MudPaper Class="pa-4">
+            <MudStack>
+                <MudTextField T="string" Label="@LocationDisplay" MaxLength="50" Counter="50" Required="true" RequiredError="Please enter a Location" @bind-value="vm.LocationName" Immediate="true" />
+                
+                <MudText Typo="Typo.caption">Is Enabled?</MudText>
+                <MudSwitch @bind-Checked="@vm.IsActive" Color="Color.Primary" />
+
+                <MudStack Row="true">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="HandleSave">Save</MudButton>
+                    @if (IsEditMode)
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="HandleDelete">Permanent Delete</MudButton>
+                    }
+                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="Cancel">Cancel</MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+
+</MudStack>
+
+@code {
+    private LocationViewModel vm = new();
+    public bool IsListMode { get; set; } = true;
+    public bool IsEditMode { get; set; } = false;
+
+    private string LocationDisplay { get => IsEditMode ? vm.LocationName : "Location"; }
+
+    private void HandleSave()
+    {
+        Debug.Write("On Submit... ");
+        if (IsEditMode)
+            vm.UpdateExisting();
+        else
+            vm.AddNew();
+
+        if (vm.IsSuccessful)
+        {
+            Cancel();
+        }
+    }
+
+    private void HandleDelete()
+    {
+        Debug.Write("On Delete... ");
+        vm.Delete();
+
+        Cancel();
+    }
+
+    private void HandleAddNew()
+    {
+        vm.Clear();
+        vm.ClearErrors();
+        vm.IsActive = true;
+
+        IsEditMode = false;
+        IsListMode = false;
+    }
+
+    private void OnEditClick(Location location)
+    {
+        vm.Clear();
+        vm.ClearErrors();
+
+        // Set the VM
+        vm.LocationName = location.Name;
+        vm.Sequence = location.Sequence;
+        vm.IsActive = location.IsActive;
+
+        IsEditMode = true;
+        IsListMode = false;
+    }
+
+    private void Cancel()
+    {
+        vm.ClearErrors();
+        vm.Clear();
+        IsEditMode = false;
+        IsListMode = true;
+    }
+}
