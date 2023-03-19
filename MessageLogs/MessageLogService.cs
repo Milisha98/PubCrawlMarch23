@@ -67,6 +67,38 @@ public class MessageLogService
         AddMessage(message);
     }
 
+	public void DrinkMessage(string userName, PokemonEnum pokemon, string drinkName)
+	{
+		var drinkSynonym = new List<string>
+		{
+            "attacked",
+			"skulled",
+			"chugged",
+			"downed",
+			"drained",
+			"drank",
+			"finished off",
+			"necked",
+			"forced down",
+			"glugged",
+			"guzzled",
+			"imbibed",
+			"knocked back",
+			"obliterated",
+			"polished off",
+			"quaffed",
+			"sank",
+			"skulled",
+			"smashed back",
+			"wolfed down"
+        };
+        var index = Random.Shared.Next(0, drinkSynonym.Count);
+        string synonym = drinkSynonym[index];
+        string message = $"{userName} ({pokemon}) {synonym} a {drinkName}";
+		
+		AddMessage(message);
+
+    }
 
     public void AddMessage(string message)
 	{

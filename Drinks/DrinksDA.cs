@@ -2,14 +2,19 @@
 
 public class DrinksDA
 {
-    public List<Drink> List() =>
+    public List<DrinkEnum> ListDrinkCodes() =>
         new()
         {
-            new("Beer (Midi)", 1),
-            new("Beer (Pint)", 2),
-            new("Wine", 2),
-            new("Sprits", 2),
-            new("Cocktail", 3)
+            DrinkEnum.BeerMidi,
+            DrinkEnum.BeerPint,
+            DrinkEnum.Wine,
+            DrinkEnum.Sprit,
+            DrinkEnum.Cocktail
         };
+
+    public List<Drink> ListDrinks() => 
+        ListDrinkCodes()
+            .Select(drinkCode => drinkCode.ToDrink())
+            .ToList();
 
 }
