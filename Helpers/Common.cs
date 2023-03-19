@@ -6,4 +6,5 @@ public static class Common
 {
     public static string DataPath = @".\Data\";
     public static RoundID? ActiveRound { get; set; } = null;
+
 }
