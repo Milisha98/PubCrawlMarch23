@@ -1,9 +1,45 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudPaper Class="pa-4">
+    <MudStack Row="true">
+        <MudImage Src="images/icon.png" Alt="Core Pub Crawl Icon" Elevation="25" Class="rounded-lg" />
+        <MudStack Justify="Justify.Center" Spacing="0">
+            <MudText Typo="Typo.h3">CORE TEAM - PUB CRAWL</MudText>
+            <MudText Typo="Typo.h4">24th March 2023</MudText>
+        </MudStack>
+    </MudStack>
+</MudPaper>
 
-Welcome to your new app.
+<MudPaper Class="pa-4">
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <MudPaper Class="d-flex flex-wrap gap-4" Elevation="0">
+
+        <!-- Register -->
+        <MudPaper Width="320px">
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.caption" Align="Align.Center">REGISTER</MudText>
+                
+                <MudButton Href="Register" Variant="Variant.Filled" Color="Color.Primary" Class="mt-3">
+                    <MudText Typo="Typo.button">REGISTER NOW</MudText>
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+
+        <!-- Login -->
+        <MudPaper Width="320px">
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.caption" Align="Align.Center">LOGIN</MudText>
+                <MudSpacer />
+                <MudTextField T="string" Label="Your 4 Digit Login Code" MaxLength="4" Counter="4" />
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary">
+                    <MudText Typo="Typo.button">LOGIN</MudText>
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+
+    </MudPaper>
+
+</MudPaper>
+
+
