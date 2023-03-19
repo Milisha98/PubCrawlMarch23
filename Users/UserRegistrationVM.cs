@@ -20,7 +20,10 @@ public class UserRegistrationVM
         if (UserName.Length == 0) errors.Add("Please enter your name");
         if (SelectedPokemon is null) errors.Add("Please select a Pokemon");
      
-        // TODO: Validate if the name is already there.s
+        if (_userService.Users.Any(u => string.Equals(UserName, u.Name, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            errors.Add("You have already registered. Please talk to a dev and we can retreive your code if you've lost it");
+        }
 
         IsSuccessful = !errors.Any();
         Errors = errors;
