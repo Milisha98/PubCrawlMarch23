@@ -50,9 +50,6 @@ public class QuizService
         _questionDA.Save(_questions);
     }
 
-    #endregion
-
-
     public QuizQuestion? GetQuizQuestionForPlayer(string userCode)
     {
         var alreadyAnswered = _quizPlayers.Where(x => x.UserCode == userCode).Select(x => x.QuestionID).ToList();
@@ -61,6 +58,9 @@ public class QuizService
         int rnd = Random.Shared.Next(0, eligibleQuestions.Count() - 1);
         return _questions[rnd];
     }
+
+    #endregion
+
 
     public void AnswerQuestion(User player, QuizQuestion question, int answer)
     {

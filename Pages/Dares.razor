@@ -1,0 +1,86 @@
+﻿@page "/dares"
+@using PubCrawlMarch23
+@using PubCrawlMarch23.Dare;
+@using System.Diagnostics;
+
+<PageTitle>Dares</PageTitle>
+
+<MudStack>
+
+    <!-- Header -->
+    <MudPaper Class="pa-4">
+        <MudStack Row="true">
+            <MudImage Src="images/icon.png" Alt="Core Pub Crawl Icon" Elevation="25" Class="rounded-lg" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.h2">Dares</MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    @if (vm.PageView == PageViewEnum.List)
+    {
+        <MudPaper Class="pa-4">            
+
+            <MudSimpleTable Hover="true" Dense="true" FixedHeader="true">
+                <thead>
+                    <tr>
+                        <th>Dare</th>
+                        <th>Score</th>
+                        <th>Image</th>
+                        <th>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="vm.AddNewItem" Size="Size.Medium">Add New</MudButton>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in vm.Dares)
+                    {
+                        <tr>
+                            <td><MudLink @onclick="() => vm.EditItem(row)">@row.DareName</MudLink></td>
+                            <td>@row.Score</td>
+                            <td>@row.Image</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+        </MudSimpleTable>
+        </MudPaper>
+    }
+    else
+    {
+        if (vm.Errors.Any())
+        {
+            <MudPaper Class="pa-4">
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                    @foreach (var error in vm.Errors)
+                    {
+                        <MudText>@error</MudText>
+                    }
+                </MudAlert>
+            </MudPaper>            
+        }
+
+        <MudPaper Class="pa-4">
+            <MudStack>
+                <MudTextField T="string" Label="@vm.DareNameDisplay" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter a Dare Name" @bind-value="vm.DareName" Immediate="true" />
+                <MudNumericField Label="Score" Variant="Variant.Text" Min="1" Max="999" @bind-Value="vm.Score" />
+                <MudTextField T="string" Label="@vm.ImageDisplay" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter an Image" @bind-value="vm.Image" Immediate="true" />              
+
+                <MudStack Row="true">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="vm.OnSave">Save</MudButton>
+                    @if (vm.PageView == PageViewEnum.Edit)
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="vm.OnDelete">Permanent Delete</MudButton>
+                    }
+                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="vm.Cancel">Cancel</MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+
+</MudStack>
+
+@code {
+    private DareViewModel vm = new();
+
+}
