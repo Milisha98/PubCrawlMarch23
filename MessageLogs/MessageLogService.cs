@@ -110,6 +110,26 @@ public class MessageLogService
 
     }
 
+    public void IncorrectQuizAnswer(string userName, PokemonEnum pokemon)
+	{
+		var synonyms = new List<string> { "flunked", "failed", "got an E on", "screwed up", "munted up", "gave up on", "did not do so well on" };
+        var index = Random.Shared.Next(0, synonyms.Count);
+        string synonym = synonyms[index];
+        string message = $"{userName} ({pokemon}) {synonym} a quiz question";
+
+        AddMessage(message);
+    }
+
+    public void CorrectQuizAnswer(string userName, PokemonEnum pokemon)
+	{
+        var synonyms = new List<string> { "aced", "got an A+ on", "made light work of", "smashed", "got lucky on"};
+        var index = Random.Shared.Next(0, synonyms.Count);
+        string synonym = synonyms[index];
+        string message = $"{userName} ({pokemon}) {synonym} a quiz question";
+
+        AddMessage(message);
+    }
+
     public void AddMessage(string message)
 	{
 		message = Regex.Escape(message);	// Not tested, but hoping this will prevent messagages from corrupting the json file store

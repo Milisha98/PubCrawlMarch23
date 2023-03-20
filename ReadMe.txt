@@ -7,3 +7,4 @@
 . Verses?
 
 
+. Quiz: Log Message if a takes lead of the leaderboard
