@@ -1,0 +1,87 @@
+﻿@page "/quizzes"
+@using PubCrawlMarch23
+@using PubCrawlMarch23.Quiz;
+@using System.Diagnostics;
+
+<PageTitle>Quizzes</PageTitle>
+
+<MudStack>
+
+    <!-- Header -->
+    <MudPaper Class="pa-4">
+        <MudStack Row="true">
+            <MudImage Src="images/icon.png" Alt="Core Pub Crawl Icon" Elevation="25" Class="rounded-lg" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.h2">Quizes</MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    @if (vm.PageView == PageViewEnum.List)
+    {
+        <MudPaper Class="pa-4">            
+
+            <MudSimpleTable Hover="true" Dense="true" FixedHeader="true">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Answer 1</th>
+                        <th>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="vm.AddNewItem" Size="Size.Medium">Add New</MudButton>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in vm.Questions)
+                    {
+                        <tr>
+                            <td><MudLink @onclick="() => vm.EditItem(row)">@row.Question</MudLink></td>
+                            <td>@row.Answer1</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+        </MudSimpleTable>
+        </MudPaper>
+    }
+    else
+    {
+        if (vm.Errors.Any())
+        {
+            <MudPaper Class="pa-4">
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                    @foreach (var error in vm.Errors)
+                    {
+                        <MudText>@error</MudText>
+                    }
+                </MudAlert>
+            </MudPaper>            
+        }
+
+        <MudPaper Class="pa-4">
+            <MudStack>
+                <MudTextField T="string" Label="@vm.QuestionDisplay" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter a Question" @bind-value="vm.Question" Immediate="true" />
+                <MudTextField T="string" Label="@vm.Answer1Display" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter Answer 1" @bind-value="vm.Answer1" Immediate="true" />
+                <MudTextField T="string" Label="@vm.Answer2Display" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter Answer 2" @bind-value="vm.Answer2" Immediate="true" />
+                <MudTextField T="string" Label="@vm.Answer3Display" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter Answer 3" @bind-value="vm.Answer3" Immediate="true" />
+                <MudTextField T="string" Label="@vm.Answer4Display" MaxLength="125" Counter="125" Required="true" RequiredError="Please enter Answer 4" @bind-value="vm.Answer4" Immediate="true" />
+                <MudNumericField Label="Answer" Variant="Variant.Text" Min="1" Max="4" @bind-Value="vm.Answer" />
+
+                <MudStack Row="true">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="vm.OnSave">Save</MudButton>
+                    @if (vm.PageView == PageViewEnum.Edit)
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="vm.OnDelete">Permanent Delete</MudButton>
+                    }
+                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="vm.Cancel">Cancel</MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+
+</MudStack>
+
+@code {
+    private QuizViewModel vm = new();
+
+}

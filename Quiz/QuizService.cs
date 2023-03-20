@@ -9,8 +9,8 @@ public class QuizService
     private readonly QuizPlayerDA _quizPlayerDA;
     private readonly MessageLogService _logs;
 
-    private IList<QuizQuestion> _questions;
-    private IList<QuizPlayer> _quizPlayers;
+    private List<QuizQuestion> _questions;
+    private List<QuizPlayer> _quizPlayers;
 
     /// <summary>
     /// Constructor
@@ -23,24 +23,48 @@ public class QuizService
         _questionDA = questionDA ?? new();
         _quizPlayerDA = quizPlayerDA ?? new();
         _logs = logs ?? new();
-        _questions = _questionDA.List();
-        _quizPlayers = _quizPlayerDA.List();
+        _questions = _questionDA.List().ToList();
+        _quizPlayers = _quizPlayerDA.List().ToList();
     }
 
-    public QuizQuestion? GetQuizQuestionForPlayer(string playerCode)
+
+    #region CRUD
+
+    public void AddNew(QuizQuestion question)
     {
-        var alreadyAnswered = _quizPlayers.Where(x => x.PlayerCode == playerCode).Select(x => x.QuestionID).ToList();
+        var newQuestion = question with { QuestionID = Guid.NewGuid() };
+        _questions.Add(newQuestion);
+        _questionDA.Save(_questions);
+    }
+
+    public void Update(QuizQuestion question) 
+    { 
+        _questions.RemoveAll(x => x.QuestionID == question.QuestionID);
+        _questions.Add(question);
+        _questionDA.Save(_questions);
+    }
+
+    public void Delete(QuizQuestion question) 
+    { 
+        _questions.Remove(question);
+        _questionDA.Save(_questions);
+    }
+
+    #endregion
+
+
+    public QuizQuestion? GetQuizQuestionForPlayer(string userCode)
+    {
+        var alreadyAnswered = _quizPlayers.Where(x => x.UserCode == userCode).Select(x => x.QuestionID).ToList();
         var eligibleQuestions = _questions.Where(x => alreadyAnswered.Contains(x.QuestionID) == false);
         if (eligibleQuestions.Any() == false) return null;
         int rnd = Random.Shared.Next(0, eligibleQuestions.Count() - 1);
         return _questions[rnd];
     }
 
-    public void AnswerQuestion(User player, Guid questionID, int answer)
+    public void AnswerQuestion(User player, QuizQuestion question, int answer)
     {
         int points = 0;
-        var question = _questions.FirstOrDefault(x => x.QuestionID == questionID);
-        if (question == null) return;
         if (question.Answer == answer)
         {
             points = 1;
@@ -51,7 +75,7 @@ public class QuizService
             _logs.IncorrectQuizAnswer(player.Name, player.Pokemon);
         }
 
-        var result = new QuizPlayer(questionID, player.Code, points);
+        var result = new QuizPlayer(question.QuestionID, player.Code, points);
         _quizPlayers.Add(result);
         _quizPlayerDA.Save(_quizPlayers);
         
@@ -59,6 +83,6 @@ public class QuizService
 
     }
 
-    public IList<QuizQuestion> Questions { get => _questions; }
+    public List<QuizQuestion> Questions { get => _questions.ToList(); }
 
 }
