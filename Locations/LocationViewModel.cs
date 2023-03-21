@@ -1,4 +1,5 @@
-﻿using PubCrawlMarch23.Users;
+﻿using PubCrawlMarch23.Quiz;
+using PubCrawlMarch23.Users;
 using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -17,7 +18,14 @@ public class LocationViewModel
 		_service = locationService ?? new LocationService();
 	}
 
-	private string _locationName = string.Empty;
+    public PageViewEnum PageView { get; set; } = PageViewEnum.List;
+
+    public IList<Location> Locations { get => _service.Locations; }
+
+
+    #region Location Fields
+
+    private string _locationName = string.Empty;
 	public string LocationName
 	{
 		get { return _locationName; }
@@ -31,6 +39,12 @@ public class LocationViewModel
 
     public bool IsActive { get; set; }
     public int Sequence { get; set; }
+
+    public string LocationNameDisplay { get => PageView == PageViewEnum.Edit ? LocationName : "Location"; }
+
+    #endregion
+
+    #region Validation
 
     public bool Validate(bool validateDuplicate)
     {
@@ -53,34 +67,97 @@ public class LocationViewModel
         return IsSuccessful;
     }
 
-    public bool AddNew()
+    public bool IsSuccessful { get; private set; }
+    public List<string> Errors { get; private set; } = new List<string>();
+
+    #endregion
+
+    #region Form Actions
+
+    public void OnSave()
     {
+        if (PageView == PageViewEnum.Edit)
+            OnUpdate();
+        else if (PageView == PageViewEnum.AddNew)
+            OnInsert();
+    }
+
+    public void AddNewItem()
+    {
+        Clear();
+        PageView = PageViewEnum.AddNew;
+    }
+
+    public void EditItem(Location location)
+    {
+        SetLocationFields(location);
+        PageView = PageViewEnum.Edit;
+    }
+
+    public void Cancel()
+    {
+        ClearErrors();
+        Clear();
+        PageView = PageViewEnum.List;
+    }
+
+    #endregion
+
+    #region CRUD Actions
+
+    public bool OnInsert()
+    {
+        ClearErrors();
         if (Validate(true) == false) return false;
 
-        _service.AddNewLocation(LocationName);
-        return true;
-    }
+        var location = ToLocation();
+        _service.AddNewLocation(location);
 
-    public bool UpdateExisting()
-    {
-        if (Validate(false) == false) return false;
-        _service.UpdateExistingLocation(Sequence, LocationName, IsActive);
-        return true;
-    }
-
-    public void Delete() 
-    {
-        var location = Locations.FirstOrDefault(x => x.Sequence == Sequence);
-        if (location == null) return;
-        _service.RemoveLocation(location);
         Clear();
-        ClearErrors();
+        PageView = PageViewEnum.List;
+
+        return true;
+
     }
 
-    public void Clear()
+    public bool OnUpdate()
     {
-        Sequence= 0;
+        ClearErrors();
+        if (Validate(false) == false) return false;
+
+        var location = ToLocation();
+        _service.UpdateExistingLocation(location);
+
+        Clear();
+        PageView = PageViewEnum.List;
+
+        return true;
+    }
+
+    public void OnDelete()
+    {
+        _service.RemoveLocation(Sequence);
+
+        Clear();
+        PageView = PageViewEnum.List;
+
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    private void SetLocationFields(Location location)
+    {
+        LocationName = location.Name;
+        Sequence = location.Sequence;
+        IsActive = location.IsActive;
+    }
+
+    private void Clear()
+    {
         LocationName = string.Empty;
+        Sequence = 0;
         IsActive = false;
     }
 
@@ -90,8 +167,9 @@ public class LocationViewModel
         Errors = new List<string>();
     }
 
-    public bool IsSuccessful { get; private set; }
-    public List<string> Errors { get; private set; } = new List<string>();
+    private Location ToLocation() =>
+        new(Sequence, LocationName, IsActive);
 
-    public IList<Location> Locations { get => _service.Locations; }
+
+    #endregion
 }

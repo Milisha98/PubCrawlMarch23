@@ -17,7 +17,7 @@
         </MudStack>
     </MudPaper>
 
-    @if (IsListMode)
+    @if (vm.PageView == PageViewEnum.List)
     {
         <MudPaper Class="pa-4">
             
@@ -29,7 +29,7 @@
                         <th>Is Enabled</th>
                         <th></th>
                         <th>
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="HandleAddNew" Size="Size.Medium">Add New</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="vm.AddNewItem" Size="Size.Medium">Add New</MudButton>
                         </th>
                     </tr>
                 </thead>
@@ -37,7 +37,7 @@
                     @foreach (var row in vm.Locations)
                     {
                         <tr>
-                            <td><MudLink @onclick="() => OnEditClick(row)">@row.Name</MudLink></td>
+                            <td><MudLink @onclick="() => vm.EditItem(row)">@row.Name</MudLink></td>
                             <td>@(row.IsActive ? "Yes" : "No")</td>
                             <td><!-- TODO: Resequence buttons --></td>
                             <td><!-- TODO: Resequence buttons --></td>
@@ -63,18 +63,18 @@
 
         <MudPaper Class="pa-4">
             <MudStack>
-                <MudTextField T="string" Label="@LocationDisplay" MaxLength="50" Counter="50" Required="true" RequiredError="Please enter a Location" @bind-value="vm.LocationName" Immediate="true" />
+                <MudTextField T="string" Label="@vm.LocationNameDisplay" MaxLength="50" Counter="50" Required="true" RequiredError="Please enter a Location" @bind-value="vm.LocationName" Immediate="true" />
                 
                 <MudText Typo="Typo.caption">Is Enabled?</MudText>
                 <MudSwitch @bind-Checked="@vm.IsActive" Color="Color.Primary" />
 
                 <MudStack Row="true">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="HandleSave">Save</MudButton>
-                    @if (IsEditMode)
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="vm.OnSave">Save</MudButton>
+                    @if (vm.PageView == PageViewEnum.Edit)
                     {
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="HandleDelete">Permanent Delete</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="vm.OnDelete">Permanent Delete</MudButton>
                     }
-                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="Cancel">Cancel</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="vm.Cancel">Cancel</MudButton>
                 </MudStack>
             </MudStack>
         </MudPaper>
@@ -84,62 +84,4 @@
 
 @code {
     private LocationViewModel vm = new();
-    public bool IsListMode { get; set; } = true;
-    public bool IsEditMode { get; set; } = false;
-
-    private string LocationDisplay { get => IsEditMode ? vm.LocationName : "Location"; }
-
-    private void HandleSave()
-    {
-        Debug.Write("On Submit... ");
-        if (IsEditMode)
-            vm.UpdateExisting();
-        else
-            vm.AddNew();
-
-        if (vm.IsSuccessful)
-        {
-            Cancel();
-        }
-    }
-
-    private void HandleDelete()
-    {
-        Debug.Write("On Delete... ");
-        vm.Delete();
-
-        Cancel();
-    }
-
-    private void HandleAddNew()
-    {
-        vm.Clear();
-        vm.ClearErrors();
-        vm.IsActive = true;
-
-        IsEditMode = false;
-        IsListMode = false;
-    }
-
-    private void OnEditClick(Location location)
-    {
-        vm.Clear();
-        vm.ClearErrors();
-
-        // Set the VM
-        vm.LocationName = location.Name;
-        vm.Sequence = location.Sequence;
-        vm.IsActive = location.IsActive;
-
-        IsEditMode = true;
-        IsListMode = false;
-    }
-
-    private void Cancel()
-    {
-        vm.ClearErrors();
-        vm.Clear();
-        IsEditMode = false;
-        IsListMode = true;
-    }
 }

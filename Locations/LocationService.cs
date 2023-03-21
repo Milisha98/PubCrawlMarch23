@@ -3,7 +3,7 @@
 public class LocationService
 {
     private readonly LocationDA _da;
-	private IList<Location> _locations;
+	private List<Location> _locations;
 
 	/// <summary>
 	/// Constructor
@@ -18,35 +18,28 @@ public class LocationService
 
 	}
 
-	public void AddNewLocation(string locationName)
+	public void AddNewLocation(Location location)
 	{
+		
 		int sequence = _locations.Any() ? _locations.Max(x => x.Sequence) + 2 : 2;
-		locationName = locationName.Trim();
+		var newLocation = new Location(sequence, location.Name.Trim(), location.IsActive);
 
-
-		var location = new Location(sequence, locationName, true);
-		_locations.Add(location);
-		_da.Save(_locations);
-
-	}
-
-	public void UpdateExistingLocation(int sequence, string locationName, bool isActive) 
-	{
-		var existing = _locations.FirstOrDefault(x => x.Sequence == sequence);
-		if (existing != null)
-		{
-            _locations.Remove(existing);
-        }
-
-		var newLocation = new Location(sequence, locationName, isActive);		
 		_locations.Add(newLocation);
 		_da.Save(_locations);
+
 	}
 
-	public void RemoveLocation(Location location)
+	public void UpdateExistingLocation(Location location) 
 	{
-		_locations.Remove(location);
-		ReIndex();
+		_locations.RemoveAll(x => x.Sequence == location.Sequence);
+		_locations.Add(location);
+        ReIndex();
+    }
+
+	public void RemoveLocation(int sequence)
+	{
+        _locations.RemoveAll(x => x.Sequence == sequence);
+        ReIndex();
 	}
 
     #region Move Methods
