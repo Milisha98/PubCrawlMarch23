@@ -19,9 +19,7 @@
 
     @if (vm.PageView == PageViewEnum.List)
     {
-        <MudPaper Class="pa-4">
-            
-
+        <MudPaper Class="pa-4">           
             <MudSimpleTable Hover="true" Dense="true" FixedHeader="true">
                 <thead>
                     <tr>
@@ -39,8 +37,18 @@
                         <tr>
                             <td><MudLink @onclick="() => vm.EditItem(row)">@row.Name</MudLink></td>
                             <td>@(row.IsActive ? "Yes" : "No")</td>
-                            <td><!-- TODO: Resequence buttons --></td>
-                            <td><!-- TODO: Resequence buttons --></td>
+                            <td>
+                                @if (vm.CanMoveUp(row))
+                                {
+                                    <MudLink @onclick="() => vm.MoveUp(row)"><MudIcon Icon="@Icons.Material.Filled.ArrowCircleUp" Title="Move Up" /></MudLink>
+                                }
+                            </td>
+                            <td>
+                                @if (vm.CanMoveDown(row))
+                                {
+                                    <MudLink @onclick="() => vm.MoveDown(row)"><MudIcon Icon="@Icons.Material.Filled.ArrowCircleDown" Title="Move Down" /></MudLink>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>

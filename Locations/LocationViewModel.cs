@@ -22,7 +22,6 @@ public class LocationViewModel
 
     public IList<Location> Locations { get => _service.Locations; }
 
-
     #region Location Fields
 
     private string _locationName = string.Empty;
@@ -99,6 +98,21 @@ public class LocationViewModel
         ClearErrors();
         Clear();
         PageView = PageViewEnum.List;
+    }
+
+    public bool CanMoveUp(Location location) =>
+        location.Sequence > 2;
+    public bool CanMoveDown(Location location) =>
+        Locations.Any() && location.Sequence < Locations.Max(x => x.Sequence);
+
+    public void MoveUp(Location location)
+    {
+        if (CanMoveUp(location)) _service.MoveUp(location);
+    }
+
+    public void MoveDown(Location location)
+    {
+        if (CanMoveDown(location)) _service.MoveDown(location);
     }
 
     #endregion

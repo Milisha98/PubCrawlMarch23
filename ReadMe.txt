@@ -1,5 +1,4 @@
-﻿. Location (Move Up / Move Down)
-. Authentication (of some kind - Admin vs Non-Admin)
+﻿. Authentication (of some kind - Admin vs Non-Admin)
 
 . Round UI
 . Verses?

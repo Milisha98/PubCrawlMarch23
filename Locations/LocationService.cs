@@ -69,7 +69,7 @@ public class LocationService
 	{
 		_locations = _locations
 						.OrderBy(x => x.Sequence)
-						.Select((x, i) => x with { Sequence = i * 2 })
+						.Select((x, i) => x with { Sequence = (i + 1) * 2 })
 						.ToList();
 		_da.Save(_locations);
 	}
