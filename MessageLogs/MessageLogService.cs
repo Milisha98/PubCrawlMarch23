@@ -112,7 +112,7 @@ public class MessageLogService
 
     public void IncorrectQuizAnswer(string userName, PokemonEnum pokemon)
 	{
-		var synonyms = new List<string> { "flunked", "failed", "got an E on", "screwed up", "munted up", "gave up on", "did not do so well on" };
+		var synonyms = new List<string> { "flunked", "failed", "got an F on", "screwed up", "munted up", "gave up on", "did not do so well on" };
         var index = Random.Shared.Next(0, synonyms.Count);
         string synonym = synonyms[index];
         string message = $"{userName} ({pokemon}) {synonym} a quiz question";
